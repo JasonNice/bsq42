@@ -1,0 +1,118 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_o_rdwr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jnice <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/08 21:46:25 by jnice             #+#    #+#             */
+/*   Updated: 2018/09/08 23:26:32 by jnice            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+// https://elearning.intra.42.fr/notions/piscine-c-day-12/subnotions/file-manipulation-open/videos/file-manipulation-open
+
+// Remove // before compiling
+
+// Customize for BSQ
+
+#include <sys/types.h> // needed for open
+#include <sys/stat.h> // needed for open
+#include <fcntl.h>   // needed for open
+// #include "j12.h" // header for file j12 for customization purposes ours is different
+
+int main() // additionally, this will likely be int ft_o_rdwr()
+{
+	int fd;
+	// int called fd (file descriptor)
+
+	fd = open("42", O_WRONLY | O_CREAT S_IRUSR | S_IWUSR);
+	// assigning int fd to open's return, file "42" // replace with perl map?
+	// replace O_WRONLY with O_RDWR to read the map and write(x) to map
+	// likely don't need O_CREAT because map is already created
+	// S_IRUSR (read) and S_IWUSR (write) permissions - not needed with O_RDWR?
+	if (fd == -1)
+	// open returns -1 for error and you cannout manipulate a file descriptor equal to -1
+	// this checks to see if fd is not equal to -1 and return "open() failed\n"
+	{
+		ft_putstr("open() failed\n");
+		return (1);
+	}
+	ft_putnbr(fd);
+	if (close(fd) == -1)
+	// close(fd) allows the file to be closed at the end of the code
+	// close returns -1 for error and you cannot maniulate a file descriptor equal to -1
+	// this checks to see if fd is not equal to -1 and return "close() failed\n" if so
+	{
+		ft_putstr("close() failed\n");
+		return(1);
+	}
+	return(0);
+}
+
+// https://elearning.intra.42.fr/notions/piscine-c-day-12/subnotions/file-manipulation-write/videos/file-manipulation-write
+
+// different code for write: int write(int fd, char *buf, int count)
+// int fd: file we are writing in, char (in our case: x), and number of bytes (1) ?
+
+// Same setup as open, just with a few additions:
+
+Add:
+
+void ft_putchar(int fd, char c) /* or */ void ft_putstr_fd(int fd, char *str)
+{
+	write(fd, &c, 1); /* or */ write(fd, str, ft_strlen(str));
+}
+
+insert: ft_putchar(fd, 'x'); after opening file: between: // cat "43" prints x
+ft_putnbr(fd);
+ft_putchar(fd, 'x'); /*or */ ft_putstr_fd(fd, "Hello World\n");
+if (close(fd) == -1)
+
+	// only issue is that it might overwrite the file = remove everything else in it. Such that you need to create something that switches (ammends?) file with full characters "x" and prints the box with the new "x" characters.
+	//
+	// So yes, and no, this may / may not work
+
+// https://elearning.intra.42.fr/notions/piscine-c-day-12/subnotions/file-manipulation-read/videos/file-manipulation-read
+//
+//  int read(int fd, char *buf, int count) // char *buf is the output buffer
+//
+// so may want to split functions: read then write.
+
+Add: #include <unistd.h>
+
+#define BUF_SIZE 4096 or 10 // buffer size (likely need to change this for our file)
+
+int main()
+{
+	int fd;
+	int ret; // int to stock the read's return
+	char buf[BUF_SIZE + 1]; // buffer, buf, which is static, unless you use Malloc (***)
+		   // including 1 byte
+
+	fd = open("42", O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putstr("open() error");
+		return (1);
+	}
+	while (ret = read(fd, buf, BUF_SIZE)) // Read will read 4096 bytes from file "42"
+										 // And save to buf, the buffer
+										// While loop is used when you don't know
+									   // the number of bytes you need
+									  // for While, set BUF_SIZE to # of bytes you want
+									 // to display in each line
+	{
+		buf[ret] = '\0';  // Don't forget the '\0' at the end of the string
+		ft_putnbr(ret);  // print the number of characters that have been read
+						// this will be read on first for comparison with BUF_SIZE
+		ft_putstr(buf); // print the buffer, buf
+	}
+	ft_putnbr(ret);
+	if (close(fd) == -1)
+	{
+		ft_putstr("close() error");
+		return (1);
+	}
+	return(0);
+}
