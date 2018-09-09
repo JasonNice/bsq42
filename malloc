@@ -1,0 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_memory.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jnice <marvin@42.fr>                       +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2018/09/08 20:57:32 by jnice             #+#    #+#             */
+/*   Updated: 2018/09/08 21:42:44 by jnice            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+// https://elearning.intra.42.fr/notions/piscine-c-day-07/subnotions/dynamic-memory-allocation/videos/allocation-dynamique-de-memoire
+
+// Remove all // comments before compiling. This is a start, needs customization
+
+#include <stdlib.h>
+#define LEN 1000 // 1000 chars for now (change when you identify "top" of program)
+
+int ft_memory() //for program, video was using int main(), items may be for main() only
+{
+	int i;
+	char *str; //sizeof (*str) = char
+	// variable str that is a pointer of type char*, size varied with LEN
+
+	str = (char*)malloc(sizeof(*str) * (LEN + 1));
+	// allocating str 's memory
+	// sizeof(char, str, int, *str = char) provide variable's size in bytes
+	// str's type: char, cast as char* in order to give char* to what malloc returns
+	// malloc of the sive of a character: malloc(sizeof(*str)
+	// multiplied by the number of characters we want: * (LEN + 1));
+	// + 1 to account for the "\0" end character in the str
+	i = 0;
+	while (i < LEN)
+	{
+		str[i] = '0' + (i % 10);
+		// display '0' character (probably need to remove) and customize "while loop"
+		i++;
+	}
+	str[i] = '\0';
+	// i is worth LEN, and is at the end of the string = '\0'
+
+	// ft_putstr(str);
+	// ft_putstr("\n");
+	// as long as we switch int ft_memory() with int main()
+	// here we can use ft_putstr(str); to display string here
+
+	free(str);
+	// freeing allocated memory here
+	while(1);
+	// added to stop the program, may also be used to show program with $ top
+	// check memory allocation with $ top if freed, memory < LEN
+	// may not need to keep after checking $ top
+	return(0);
+	// may not be needed because this was in int main()
+}
